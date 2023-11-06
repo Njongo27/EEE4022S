@@ -1,3 +1,6 @@
+% Load data
+load formData.mat;
+
 % Training data, 80%
 dataLearn = floor(0.8*numel(formData.Load));
 dataIn = formData.Load(1:dataLearn);
