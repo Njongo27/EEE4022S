@@ -39,13 +39,39 @@ end
 date = formData.Time(end-2015:end);
 
 % Plot the historical demand, supply, and predicted demand data.
-plot([date(end-2*timeSteps+1:end)], Load(end-2*timeSteps+1:end), 'b', 'DisplayName', 'Actual Demand');
+plot([date(end-2*timeSteps+1:end)], Load(end-2*timeSteps+1:end), 'b', 'DisplayName', 'Actual Load');
 hold on;
 plot([date(end-2*timeSteps+1:end)], supply(end-2*timeSteps+1:end), 'g','DisplayName', 'Supply');
 hold on;
-plot([timePred(1:timeSteps)], predValues, 'r', 'DisplayName', 'Predicted demand');
-title('Actual Demand, Supply, and Predicted demand');
+plot([timePred(1:timeSteps)], predValues, 'r', 'DisplayName', 'Predicted Load');
+title('Actual Load, Supply, and Predicted Load');
+legend(["Actual Load" "Supply" "Predicted Load"]);
 ylabel('Load (kWh)');
 xlabel('Time')
 grid on;
 hold off;
+
+% Pricing
+% Time of use 
+% Calculate the cost of charging an EV during the day based on dynamic TOU rates
+
+% Cost of charging an EV using the TOU rates
+chargCost = zeros(1,timeSteps);
+for i = 1:timeSteps
+    Price = price(i);
+    chargCost(i) = (currPred(i) * Price)/(10^6);
+end
+
+% Plot dynamic TOU pricing schedule + total charging cost
+figure;
+plot([timePred(1:timeSteps)], price,'r', 'DisplayName', 'Historical Data');
+title('Electricity Spot price');
+xlabel('Time of Day');
+ylabel('Spot price ($/MWh)');
+grid on;
+
+plot(timePred(1:timeSteps), chargCost, 'b', 'LineWidth', 2);
+xlabel('Time of Day');
+ylabel('Cost ($/kWh)');
+title('Electricity Cost for EV Charging (Dynamic TOU Pricing)');
+grid on;
