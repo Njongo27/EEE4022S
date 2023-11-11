@@ -1,0 +1,85 @@
+% load data and trained network (to save time, training takes too long)
+load formData.mat;
+load trainedNetwork_1.mat;
+
+% Convert to cell array
+lstmData = num2cell(formData.Load)';
+lstmData = [lstmData{:}];
+
+% Separate data for training and testing
+xSteps = floor(0.8*numel(lstmData));
+dataIN = lstmData(1:xSteps+1);
+dataOUT = lstmData(xSteps+1:end);
+
+% Make training data standard
+dataMean = mean(dataIN);
+dataSig = std(dataIN);
+dataStd = (dataIN-dataMean)/dataSig;
+
+% Predictors and Responses
+Xin = dataStd(1:end-1);
+Yin = dataStd(2:end);
+
+% Define network architecture and training options
+layers = [
+    sequenceInputLayer(1)
+    lstmLayer(10)
+    fullyConnectedLayer(1)
+    regressionLayer];
+
+options = trainingOptions("adam", ...
+    MaxEpochs=100, ...
+    SequencePaddingDirection="left", ...
+    Shuffle="every-epoch", ...
+    Plots="training-progress", ...
+    Verbose=0);
+
+% Train the network, Uncomment to train the network
+%net = trainNetwork(Xin,Yin,layers,options);
+
+% Make testing data standard
+stdTest = (dataOUT - dataMean) / dataSig;
+
+% Predictors and Responses
+Xout = stdTest(1:end-1);
+Yout = dataOUT(2:end);
+
+% Update network
+net = predictAndUpdateState(trainedNetwork_1,Xin);
+
+[net,YPred] = predictAndUpdateState(net,Yin(end));
+
+YPred = dataSig*YPred + dataMean;
+
+lstmRMSE = sqrt(mean((YPred-Yout).^2));
+
+% Reset network
+net = resetState(net);
+net = predictAndUpdateState(net,Xin);
+
+% Loop for testing the trained network
+YPred = [];
+xxSteps = numel(Xout);
+for i = 1:xxSteps
+    [net,YPred(:,i)] = predictAndUpdateState(net,Xout(:,i),'ExecutionEnvironment','cpu');
+end
+
+YPred = dataSig*YPred + dataMean;
+
+lstmRMSE = sqrt(mean((YPred-Yout).^2))/10;
+
+figure
+subplot(2,1,1)
+plot(Yout)
+hold on
+plot(YPred,'.-')
+hold off
+legend(["Actual load" "Predicted load"])
+ylabel("Load (kWh)")
+title("Testing: Actual vs Predicted Load using LSTM")
+
+subplot(2,1,2)
+stem(YPred - Yout)
+xlabel("Time")
+ylabel("Error")
+title("RMSE = " + lstmRMSE)
