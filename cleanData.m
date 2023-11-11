@@ -3,7 +3,7 @@
 % Fill outliers
 [newTable,outlierIndices] = filloutliers(DemandPriceData,"linear", ...
     "movmedian",1000,"ThresholdFactor",1.5,"DataVariables","TOTALDEMAND");
-% Uncomment display results
+% Uncomment to display results
 % figure
 % plot(DemandPriceData.TOTALDEMAND,"SeriesIndex",6,"DisplayName","Input data")
 % hold on
