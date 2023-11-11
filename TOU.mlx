@@ -1,0 +1,51 @@
+% Load cleaned historical data
+load formData.mat;
+load timePred.mat;
+
+% Load the trained neural network
+load('fnnet.mat');
+
+% Number of time steps to predict
+timeSteps = 576; % (5 minutes)*(24 hours) = 288 samples per day, 576 = 2 days
+
+% Initialize array to store predicted values.
+predValues = zeros( 1, timeSteps);
+pred = zeros(1,timeSteps);
+
+% Electricity demand
+Load = formData.Load;
+price = formData.Price(end-timeSteps+1:end);
+
+% Supply data
+supply = Load + randi([200 300]);
+
+% Loop to predict future points step by step.
+for i = 1:timeSteps
+    % Input data for the next prediction
+    inptData = Load(end-7*timeSteps+1:end-6*timeSteps)';
+
+    % Make predictions using trained neural network
+    prdctd = net(inptData);
+
+    % Store predicted values in an array
+    predValues(i) = prdctd(i);
+
+    % Update input for next prediction
+    currValue = Load(end - timeSteps: end-i)';
+    currPred = Load(end - timeSteps: end)';
+    currPred = [currValue,prdctd];
+end
+
+date = formData.Time(end-2015:end);
+
+% Plot the historical demand, supply, and predicted demand data.
+plot([date(end-2*timeSteps+1:end)], Load(end-2*timeSteps+1:end), 'b', 'DisplayName', 'Actual Demand');
+hold on;
+plot([date(end-2*timeSteps+1:end)], supply(end-2*timeSteps+1:end), 'g','DisplayName', 'Supply');
+hold on;
+plot([timePred(1:timeSteps)], predValues, 'r', 'DisplayName', 'Predicted demand');
+title('Actual Demand, Supply, and Predicted demand');
+ylabel('Load (kWh)');
+xlabel('Time')
+grid on;
+hold off;
