@@ -1,0 +1,30 @@
+% Load data and trained network, (to save time, training takes too long)
+load formData.mat;
+load fnnet.mat;
+
+% Training data, 80%
+dataLearn = floor(0.8*numel(formData.Load));
+dataIn = formData.Load(1:dataLearn);
+
+% Testing data, 20%
+dataOut = formData.Load(1+dataLearn:end);
+
+% Predictor and Response values for training and testing
+xIn = dataIn(1:end-1)';
+yIn = formData.Load(2:dataLearn)';
+
+xOut = dataOut(1:end-1)';
+yOut = dataOut(2:end)';
+
+% Network Training, Uncomment to train the network
+% net = fitnet(10,'trainbr');
+% net = train(net,xIn,yIn);
+yPred = net(xOut);
+nnfRMSE = perform(net,yPred,yOut)/10^3;
+
+plot(yOut, 'b', 'DisplayName', 'Actual');
+hold on
+plot(yPred, 'r', 'DisplayName', 'Forecasted');
+xlabel('Time (no. of 5-minute intervals');
+ylabel('Load (kWh) ');
+title('Testing: Actual vs Predicted Load using NN Fitting');
