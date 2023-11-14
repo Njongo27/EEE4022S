@@ -19,7 +19,11 @@ yOut = dataOut(2:end)';
 % Network Training, Uncomment to train the network
 % net = fitnet(10,'trainbr');
 % net = train(net,xIn,yIn);
+
+% Predict load
 yPred = net(xOut);
+
+% Calculate RMSE
 nnfRMSE = perform(net,yPred,yOut)/10^3;
 
 plot(yOut, 'b', 'DisplayName', 'Actual');
