@@ -1,0 +1,28 @@
+% This main script is for instructions on how to run each script for their respective purpose
+
+% Training scripts have been commented out so save execution time
+
+% 1. Data importing
+% Run the importData.m script to import data from the excel file
+% run importData.m;
+
+% 2. Data Cleaning
+% Run the cleanData.mlx live script, uncomment plotting code inside script
+% to visualise the differences
+% run cleanData.mlx;
+
+% 3. Run training scripts
+run fitnet.mlx; % Neural Network Fitting script for plotting testing % results
+run lstm.mlx; % Long-Short Term Memory script for plotting testing results only
+
+% 4. Run TOU pricing schedule script
+run TOU.mlx;
+
+% 5. Run DQN training script
+% run dqn.mxl;
+
+% 6. Run RTP pricing schedule script
+run RTP.mlx;
+
+% 7. Run TOU vs RTP script
+run TOUvsRTP.mlx;
