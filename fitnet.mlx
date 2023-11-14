@@ -1,6 +1,7 @@
 % Load data and trained network, (to save time, training takes too long)
 load formData.mat;
 load fnnet.mat;
+load yyPred.mat;
 
 % Training data, 80%
 dataLearn = floor(0.8*numel(formData.Load));
@@ -21,7 +22,7 @@ yOut = dataOut(2:end)';
 % net = train(net,xIn,yIn);
 
 % Predict load
-yPred = net(xOut);
+% yPred = net(xOut);
 
 % Calculate RMSE
 nnfRMSE = perform(net,yPred,yOut)/10^3;
