@@ -6,7 +6,7 @@ load timePred.mat;
 load('fnnet.mat');
 
 % Number of time steps to predict
-timeSteps = 576; % (5 minutes)*(24 hours) = 288 samples per day, 576 = 2 days
+timeSteps = 288; % (5 minutes)*(24 hours) = 288 samples per day, 576 = 2 days
 
 % Initialize array to store predicted values.
 predValues = zeros( 1, timeSteps);
@@ -22,7 +22,7 @@ supply = Load + randi([200 300]);
 % Loop to predict future points step by step.
 for i = 1:timeSteps
     % Input data for the next prediction
-    inptData = Load(end-7*timeSteps+1:end-6*timeSteps)';
+    inptData = Load(end-timeSteps+1:end)';
 
     % Make predictions using trained neural network
     prdctd = net(inptData);
@@ -72,6 +72,6 @@ grid on;
 
 plot(timePred(1:timeSteps), chargCost, 'b', 'LineWidth', 2);
 xlabel('Time of Day');
-ylabel('Cost ($/kWh)');
-title('Electricity Cost for EV Charging (Dynamic TOU Pricing)');
+ylabel('Charging Cost ($/kWh)');
+title('EV Charging Cost (Dynamic TOU Pricing)');
 grid on;
