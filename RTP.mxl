@@ -1,0 +1,9 @@
+load timePred.mat;
+load rtpPrices.mat;
+
+% Plot RL-based RTP
+plot(timePred(1:288), rtpPrices, 'r', 'LineWidth', 2,'DisplayName', 'RTP');
+title('RTP EV Charging Costs');
+xlabel('Time of Day');
+ylabel('Charging Cost ($/kWh)');
+grid on;
