@@ -32,3 +32,4 @@ plot(yPred, 'r', 'DisplayName', 'Forecasted');
 xlabel('Time (no. of 5-minute intervals');
 ylabel('Load (kWh) ');
 title('Testing: Actual vs Predicted Load using NN Fitting');
+legend(["Actual load" "Predicted load"]);
