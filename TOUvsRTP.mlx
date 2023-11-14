@@ -1,0 +1,16 @@
+load rtpPrices.mat;
+load chargCost.mat;
+
+% Plot TOU vs RTP charging prices
+figure;
+plot(timePred(1:288), chargCost, 'b', 'LineWidth', 2,'DisplayName', 'TOU');
+title('TOU vs RTP EV Charging Costs');
+xlabel('Time of Day');
+ylabel('Charging Cost ($/kWh)');
+hold on;
+plot(timePred(1:288), rtpPrices, 'r', 'LineWidth', 2,'DisplayName', 'RTP');
+legend(["TOU" "RTP"]);
+grid on;
+
+% Calculate averages
+disp("TOU average charging cost ($/kWh): " + num2str(mean(chargCost))); disp("RTP average charging cost ($/kWh): " + num2str(mean(rtpPrices))); disp("Average difference ($/kWh): " + num2str(mean(chargCost)-mean(rtpPrices)));
